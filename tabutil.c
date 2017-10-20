@@ -12,9 +12,8 @@ int main(int args, char *argv[])  {
     if(args > 0){
       if(strcmp(argv[1],"-d")==0){
         if(c=='\t'){
-          c=' ';
           for(int i=0;i<numberOfSpaces;++i){
-            printf("%c", c);
+            printf("%c", ' ');
           }
         } else {
           printf("%c", c);
@@ -25,10 +24,10 @@ int main(int args, char *argv[])  {
           counterRemainingSpace++;
           if(counterRemainingSpace==numberOfSpaces){
             printf("%c", '\t');
-            a=0;
+            counterRemainingSpace=0;
           }
         } else {
-          for(int i=0;i<a;i++) {
+          for(int i=0;i<counterRemainingSpace;i++) {
             printf("%c",' ');
           }
           printf("%c", c);

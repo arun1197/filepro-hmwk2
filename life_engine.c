@@ -56,7 +56,8 @@ void read_board_from_file(char *filename, life_board *board)
  ********************************************************************/
 int get_index(life_board board, int row, int col)
 {
-	return 0; // TODO: implement me
+  int index = board.num_cols*row+col;
+	return index; // TODO: implement me
 }
 /********************************************************************
  * set_alive - set the given cell to alive
@@ -96,6 +97,9 @@ void set_dead(life_board board, int row, int col)
  ***********************************************************************/
 int is_in_range(life_board board, int row, int col)
 {
+  if(row >= 0 && col >= 0 && row < board.num_rows && col < board.num_cols){
+    return 1;
+  }
 	return 0; // TODO: implement me
 }
 
@@ -105,6 +109,9 @@ int is_in_range(life_board board, int row, int col)
  ***********************************************************************/
 int is_alive(life_board board, int row, int col)
 {
+  if(board.cells[get_index(board,row,col)] == 1 && is_in_range(board,row,col) == 1){
+    return 1;
+  }
 	return 0; // TODO: implement me
 }
 
@@ -114,7 +121,41 @@ int is_alive(life_board board, int row, int col)
  ***********************************************************************/
 int count_live_nbrs(life_board board, int row, int col)
 {
-	return 0; // TODO: implement me
+  int liveNeighbors = 0;
+  //North
+  if(is_alive(board,row,col+1) == 1){
+    liveNeighbors++;
+  }
+  //South
+  if(is_alive(board,row,col-1) == 1){
+    liveNeighbors++;
+  }
+  //West
+  if(is_alive(board,row-1,col) == 1){
+    liveNeighbors++;
+  }
+  //East
+  if(is_alive(board,row+1,col) == 1){
+    liveNeighbors++;
+  }
+  //NorthWest
+  if(is_alive(board,row-1,col+1) == 1){
+    liveNeighbors++;
+  }
+  //NorthEast
+  if(is_alive(board,row+1,col+1) == 1){
+    liveNeighbors++;
+  }
+  //SouthWest
+  if(is_alive(board,row-1,col-1) == 1){
+    liveNeighbors++;
+  }
+  //SouthEast
+  if(is_alive(board,row+1,col-1) == 1){
+    liveNeighbors++;
+  }
+
+	return liveNeighbors; // TODO: implement me
 }
 
 /***********************************************************************
@@ -124,5 +165,29 @@ int count_live_nbrs(life_board board, int row, int col)
  ***********************************************************************/
 void make_next_board(life_board current, life_board next)
 {
-	return 0; // TODO: implement me
+  for(int i=0;i<current.num_rows;i++){
+    for(int j=0;j<current.num_cols;j++){
+      if(is_alive(current,i,j)){
+        //If a cell is alive and has 2 or 3 live neighbors, it will remain alive in the next generation.
+        if(count_live_nbrs(current,i,j)==2 || count_live_nbrs(current,i,j)==3){
+          set_alive(next,i,j);
+        }
+        // for case with fewer than 2 neighbors, or more than 3; set_dead
+        else {
+          set_dead(next,i,j);
+        }
+      }else{
+        // If a cell is dead and has exactly 3 live neighbors, new org will be born
+        // so set_alive. Else, it remains dead.
+        if(count_live_nbrs(current,i,j)==3){
+          set_alive(next,i,j);
+        }
+        //remains dead so no need to set_dead again???
+        // else{
+        //   set_dead(next,i,j);
+        // }
+      }
+    }
+  }
+	// return 0; // TODO: implement me
 }
